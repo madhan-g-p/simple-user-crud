@@ -1,9 +1,11 @@
 const {convertUnderScoresToCamelCase} = require("../../utilities/helperFunctions");
 
 const usersSQL = {
-    getUsers: async(client,params)=>{
+    getUsers: async(client,params,role)=>{
+        const filterExceptAdmins = role === 'user' ? ` AND user_role != 'admin' ` : "";
        let dbResponse = await client.query(`SELECT * FROM users.user_data
-                            LIMIT $1 OFFSET $2`,params);
+                                            WHERE 1=1 ${filterExceptAdmins} 
+                                            LIMIT $1 OFFSET $2 `,params);
             if(dbResponse.rowCount){
                 return dbResponse.rows.map(({salted_password,uuid,created_time,edited_time,...rest})=>convertUnderScoresToCamelCase(rest))
             }

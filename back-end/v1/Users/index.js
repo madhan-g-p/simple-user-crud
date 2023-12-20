@@ -21,7 +21,7 @@ router.get("/", authentication,finalValidator(listAPISchema), async (req, res, n
     pageNo = (pageNo - 1) * pageSize;
     
     const client = await pool.connect();
-    await usersSQL.getUsers(client,[pageSize, pageNo])
+    await usersSQL.getUsers(client,[pageSize, pageNo],req.role)
         .then((asset) => sendRes(res, 200, "Successfully fetched", null, asset))
         .catch(next)
         .finally(() => client.release());
